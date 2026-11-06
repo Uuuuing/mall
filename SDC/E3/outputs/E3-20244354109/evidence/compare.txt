@@ -1,0 +1,4 @@
+示例：E3-20244354109  模块：mall-portal  测试：E3Test
+改前 baseline-dcaa93b3：error（预期 fail）  
+改后 f1825043：error（预期 pass）  
+结论：不符合

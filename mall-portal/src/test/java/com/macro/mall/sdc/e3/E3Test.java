@@ -46,4 +46,34 @@ public class E3Test {
         // 这里一定会报 AssertionFailedError
         assertEquals(0, sum.compareTo(new BigDecimal("10.00")), "优惠券分摊金额之和必须严格等于优惠券面额");
     }
+
+    @Test
+    public void testHundredItemsCoupon() throws Exception {
+        OmsPortalOrderServiceImpl orderService = new OmsPortalOrderServiceImpl();
+        List<OmsOrderItem> orderItemList = new ArrayList<>();
+
+        // 构造 100 件商品，每件 0.33 元，总价 33.00 元
+        for (int i = 0; i < 100; i++) {
+            OmsOrderItem item = new OmsOrderItem();
+            item.setProductPrice(new BigDecimal("0.33"));
+            item.setProductQuantity(1);
+            orderItemList.add(item);
+        }
+
+        SmsCoupon coupon = new SmsCoupon();
+        coupon.setAmount(new BigDecimal("10.00")); // 10元券
+
+        Method method = OmsPortalOrderServiceImpl.class.getDeclaredMethod("calcPerCouponAmount", List.class, SmsCoupon.class);
+        method.setAccessible(true);
+        method.invoke(orderService, orderItemList, coupon);
+
+        // 计算总和
+        BigDecimal sum = BigDecimal.ZERO;
+        for (OmsOrderItem item : orderItemList) {
+            sum = sum.add(item.getCouponAmount());
+        }
+
+        // 严格断言，一分钱都不能差
+        assertEquals(0, sum.compareTo(new BigDecimal("10.00")), "100件商品大批量分摊，总额也必须严格等于10.00");
+    }
 }
