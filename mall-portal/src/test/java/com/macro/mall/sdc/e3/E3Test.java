@@ -76,4 +76,24 @@ public class E3Test {
         // 严格断言，一分钱都不能差
         assertEquals(0, sum.compareTo(new BigDecimal("10.00")), "100件商品大批量分摊，总额也必须严格等于10.00");
     }
+
+    @Test
+    public void testZeroCouponBoundary() throws Exception {
+        OmsPortalOrderServiceImpl orderService = new OmsPortalOrderServiceImpl();
+        List<OmsOrderItem> orderItemList = new ArrayList<>();
+        OmsOrderItem item = new OmsOrderItem();
+        item.setProductPrice(new BigDecimal("100.00"));
+        item.setProductQuantity(1);
+        orderItemList.add(item);
+
+        SmsCoupon coupon = new SmsCoupon();
+        coupon.setAmount(new BigDecimal("0.00")); // 0 元券
+
+        Method method = OmsPortalOrderServiceImpl.class.getDeclaredMethod("calcPerCouponAmount", List.class, SmsCoupon.class);
+        method.setAccessible(true);
+        method.invoke(orderService, orderItemList, coupon);
+
+        // 断言：0 元券分摊后，每个商品分到的金额必须是 0
+        assertEquals(0, orderItemList.get(0).getCouponAmount().compareTo(BigDecimal.ZERO), "0元券分摊金额应为0");
+    }
 }
