@@ -13,6 +13,7 @@ import com.macro.mall.service.UmsAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,14 +24,22 @@ import java.util.stream.Collectors;
  */
 @Service
 public class UmsAdminCacheServiceImpl implements UmsAdminCacheService {
-    @Autowired
-    private UmsAdminService adminService;
-    @Autowired
-    private RedisService redisService;
-    @Autowired
-    private UmsAdminRoleRelationMapper adminRoleRelationMapper;
-    @Autowired
-    private UmsAdminRoleRelationDao adminRoleRelationDao;
+    private final UmsAdminService adminService;
+    private final RedisService redisService;
+    private final UmsAdminRoleRelationMapper adminRoleRelationMapper;
+    private final UmsAdminRoleRelationDao adminRoleRelationDao;
+
+    public UmsAdminCacheServiceImpl(
+            @Lazy UmsAdminService adminService, // 打破循环依赖的关键
+            RedisService redisService,
+            UmsAdminRoleRelationMapper adminRoleRelationMapper,
+            UmsAdminRoleRelationDao adminRoleRelationDao) {
+        this.adminService = adminService;
+        this.redisService = redisService;
+        this.adminRoleRelationMapper = adminRoleRelationMapper;
+        this.adminRoleRelationDao = adminRoleRelationDao;
+    }
+
     @Value("${redis.database}")
     private String REDIS_DATABASE;
     @Value("${redis.expire.common}")

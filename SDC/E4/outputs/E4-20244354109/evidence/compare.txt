@@ -1,0 +1,4 @@
+示例：E4-20244354109  模块：mall-admin  测试：E4Test
+改前 baseline-dcaa93b3：error（预期 pass）  
+改后 3384cda0：error（预期 pass）  
+结论：不符合

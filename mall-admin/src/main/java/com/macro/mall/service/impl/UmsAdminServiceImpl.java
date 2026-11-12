@@ -44,18 +44,31 @@ import java.util.List;
 @Service
 public class UmsAdminServiceImpl implements UmsAdminService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsAdminServiceImpl.class);
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UmsAdminMapper adminMapper;
-    @Autowired
-    private UmsAdminRoleRelationMapper adminRoleRelationMapper;
-    @Autowired
-    private UmsAdminRoleRelationDao adminRoleRelationDao;
-    @Autowired
-    private UmsAdminLoginLogMapper loginLogMapper;
+
+    private final JwtTokenUtil jwtTokenUtil;
+    private final PasswordEncoder passwordEncoder;
+    private final UmsAdminMapper adminMapper;
+    private final UmsAdminRoleRelationMapper adminRoleRelationMapper;
+    private final UmsAdminRoleRelationDao adminRoleRelationDao;
+    private final UmsAdminLoginLogMapper loginLogMapper;
+    private final UmsAdminCacheService cacheService;
+
+    public UmsAdminServiceImpl(
+            JwtTokenUtil jwtTokenUtil,
+            PasswordEncoder passwordEncoder,
+            UmsAdminMapper adminMapper,
+            UmsAdminRoleRelationMapper adminRoleRelationMapper,
+            UmsAdminRoleRelationDao adminRoleRelationDao,
+            UmsAdminLoginLogMapper loginLogMapper,
+            UmsAdminCacheService cacheService) {
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.passwordEncoder = passwordEncoder;
+        this.adminMapper = adminMapper;
+        this.adminRoleRelationMapper = adminRoleRelationMapper;
+        this.adminRoleRelationDao = adminRoleRelationDao;
+        this.loginLogMapper = loginLogMapper;
+        this.cacheService = cacheService;
+    }
 
     @Override
     public UmsAdmin getAdminByUsername(String username) {
